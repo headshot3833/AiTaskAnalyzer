@@ -19,3 +19,138 @@ AI Task Analyzer — учебный ASP.NET Core Web API проект для а�
 - черновик технического задания.
 
 
+## Пример обращения
+
+```text
+На сайте не работает кнопка оплаты, клиент не может завершить заказ
+
+1. Тип задачи: баг
+2. Приоритет: высокий
+3. Ответственный отдел: Frontend / Backend
+4. Краткое описание задачи: клиент не может завершить заказ из-за проблемы с кнопкой оплаты.
+5. Черновик технического задания: необходимо проверить работу кнопки оплаты, frontend-логику и интеграцию с платежным сервисом.
+
+Цель проекта
+
+Цель проекта — показать возможность интеграции искусственного интеллекта в бизнес-процесс обработки клиентских заявок.
+
+Внедрение такого решения может помочь компании:
+
+ускорить первичный анализ обращений клиентов;
+снизить нагрузку на менеджеров и специалистов поддержки;
+быстрее определять ответственный отдел;
+формировать предварительное техническое задание;
+повысить качество обработки заявок.
+
+
+Используемые технологии
+C#
+.NET 8
+ASP.NET Core Web API
+Swagger
+ONNX Runtime GenAI
+Microsoft.ML.OnnxRuntimeGenAI
+Локальная ONNX-модель Phi-3
+
+
+Как работает приложение
+
+Приложение запускает ASP.NET Core Web API и загружает локальную ONNX-модель из папки:
+
+Models/phi3
+
+После запуска пользователь может отправить POST-запрос с текстом обращения клиента.
+
+Сервис выполняет следующие действия:
+
+Принимает текст обращения.
+Формирует prompt для AI-модели.
+Передает prompt в локальную ONNX-модель.
+Получает ответ модели.
+Очищает ответ от служебных токенов.
+Возвращает результат пользователю.
+Структура проекта
+AiTaskAnalyzer
+│
+├── Controllers
+│   └── AiAnalyzeController.cs
+│
+├── Interfaces
+│   └── IAiAnalyzeService.cs
+│
+├── Models
+│   └── phi3
+│       └── файлы локальной ONNX-модели
+│
+├── Services
+│   └── LocalOnnxAiService.cs
+│
+├── AnalyzeRequest.cs
+├── AnalyzeResponse.cs
+├── Program.cs
+├── appsettings.json
+├── .gitignore
+└── README.md
+API
+Анализ обращения клиента
+POST /api/ai/analyze
+Пример запроса
+{
+  "text": "Приложение не работает"
+}
+Пример ответа
+{
+  "result": "1. Тип задачи: баг\r\n2. Приоритет: высокий\r\n3. Ответственный отдел: QA"
+}
+Установка и запуск
+1. Клонировать репозиторий
+git clone https://github.com/headshot3833/AiTaskAnalyzer.git
+cd AiTaskAnalyzer
+2. Восстановить зависимости
+dotnet restore
+3. Скачать ONNX-модель
+
+Для работы проекта необходимо отдельно скачать ONNX-модель:
+
+microsoft/Phi-3-mini-4k-instruct-onnx
+
+Рекомендуемый вариант модели:
+
+cpu_and_mobile/cpu-int4-rtn-block-32-acc-level-4
+
+Модель можно скачать с Hugging Face:
+
+https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-onnx
+
+После скачивания необходимо скопировать содержимое папки:
+
+cpu_and_mobile/cpu-int4-rtn-block-32-acc-level-4
+
+в папку проекта:
+
+AiTaskAnalyzer/Models/phi3
+
+Внутри папки Models/phi3 должны находиться файлы модели, например:
+
+Models/phi3
+│
+├── added_tokens.json
+├── config.json
+├── genai_config.json
+├── phi3-mini-4k-instruct-cpu-int4-rtn-block-32-acc-level-4.onnx
+├── phi3-mini-4k-instruct-cpu-int4-rtn-block-32-acc-level-4.onnx.data
+├── special_tokens_map.json
+├── tokenizer.json
+├── tokenizer.model
+└── tokenizer_config.json
+Важно
+
+Файлы модели не добавляются в GitHub, потому что они имеют большой размер.
+
+В .gitignore добавлено правило:
+
+# Local ONNX AI model
+**/Models/phi3/
+**/Models/phi3/**
+
+Поэтому после клонирования репозитория модель необходимо скачать и добавить вручную.
